@@ -5,6 +5,7 @@
 \usepackage[style=numeric, sorting=none, sortcites=true, maxnames=1, giveninits=true, autocite=superscript, doi=false, url=false, isbn=false, backend=biber, style=verbose-note, citetracker=false, pagetracker=false, bibencoding=utf8]{biblatex}
 % \usepackage[backend=bibtex,style=authoryear-comp,citestyle=authoryear-comp,firstinits=true,sorting=none,maxnames=1,doi=false,isbn=false,url=false,eprint=false]{biblatex}
 \usepackage[T1]{fontenc}
+\usepackage{siunitx}
 
 \definecolor{twitter_blue}{HTML}{1da1f2}
 \input{seaborn_colours.tex}
@@ -72,7 +73,7 @@
 \AtEveryBibitem{\clearfield{pages}}
 \DeclareNameAlias{default}{given-family}
 
-\renewcommand*{\bibfont}{\tiny}
+% \renewcommand*{\bibfont}{\tiny}
 \usepackage{amssymb}
 \usepackage{epsfig}
 \usepackage{psfrag}
@@ -85,7 +86,6 @@
 \usepackage{subcaption}
 %\usepackage{style}
 \usepackage{verbatim}
-\usepackage{listings}
 \usepackage{multicol}
 \usepackage[table]{xcolor}
 \usepackage{tabularx}
@@ -131,9 +131,9 @@
 \usepackage{smartdiagram}
 \usesmartdiagramlibrary{additions}
 \usepackage{multicol}
+\usepackage{helvet}
 \usepackage{sansmath}
 \sansmath
-\usepackage{helvet}
 \usepackage{chronology}
 \usepackage[normalem]{ulem} % for sout (strike out)
 \usepackage{tcolorbox}
@@ -188,8 +188,11 @@
 
 \renewcommand{\ttdefault}{pcr} % enables bold fixed width font
 \numberwithin{equation}{section}
-\usefonttheme{professionalfonts}
+% \usefonttheme{professionalfonts}
 %\usefonttheme[stillsansseriflarge,stillsansserifsmall]{serif}
+\usepackage{siunitx,booktabs}
+% \AtBeginDocument{\sisetup{math-rm=\mathsf, text-rm=\sffamily}}
+\AtBeginEnvironment{frame}{\setcounter{footnote}{0}}
 
 \newlength{\myimscale}
 
@@ -204,7 +207,7 @@
 %  - use [autogobble] to remove leading indentations
 
 \usepackage{minted}
-\usemintedstyle{gruvbox}
+\usemintedstyle{gruvbox-dark}
 \definecolor{gruvbox_dark_bg}{HTML}{282828}
 \definecolor{gruvbox_fg}{HTML}{ebdbb2}
 \definecolor{kgrey}{HTML}{2b2828}
@@ -271,21 +274,33 @@
 	
 }
 
+\newcommand{\insertframeinfo}{| \insertframenumber/\inserttotalframenumber}
+\newcommand{\backupbegin}{
+   \newcounter{finalframe}
+   \setcounter{finalframe}{\value{framenumber}}
+   \renewcommand{\insertframeinfo}{}
+}
+\newcommand{\backupend}{
+   \setcounter{framenumber}{\value{finalframe}}
+}
+
+
 \setbeamertemplate{frametitle}
 {
   \vspace{-1pt}
   \begin{beamercolorbox}[wd=\paperwidth,ht=0.8cm]{frametitle}
    \hspace{0.05em}
-   \begin{minipage}{0.7\textwidth}
+   \begin{minipage}{0.8\textwidth}
      \bf \insertframetitle
 
    \end{minipage}
    \hfill
-   \begin{minipage}{0.25\textwidth}
+   \begin{minipage}{0.15\textwidth}
    \begin{flushright}
    \scriptsize \textbf{Edward Linscott}
    
    \includegraphics[height=0.21cm]{/home/elinscott/Pictures/epfl_logos/white_cropped.eps}
+   \textbf{\insertframeinfo}
    \end{flushright}
    \end{minipage}
    \vspace{0.125cm}
@@ -302,7 +317,9 @@
   \vspace{1.5ex}
   \begin{minipage}{\textwidth}
    \begin{flushright}
-   \includegraphics[height=0.05\textheight]{/home/elinscott/Pictures/epfl_logos/white_cropped.eps}
+   \includegraphics[height=0.05\textheight]{/home/elinscott/Pictures/snsf_logos/SNF_logo_standard_web_color_pos_e.png}
+   % \hspace{0.01\textheight}
+   % \includegraphics[height=0.05\textheight]{/home/elinscott/Pictures/epfl_logos/black_cropped.eps}
    \hspace{0.1cm}\hbox{}
   \end{flushright}
 
@@ -343,36 +360,40 @@
 
 \frame{\titlepage}
 
-\begin{frame}{Takeaways}
-   \begin{itemize}
-      \item what Koopmans functionals are
-      \item the results Koopmans functionals give
-      \item \texttt{koopmans v1.0b} has just been released!
-   \end{itemize}
+% \begin{frame}{Take home message}
+% 
+%    Koopmans functionals are a class of functionals that aim to reproduce spectral properties and total energies on the same footing
+% 
+%    \vspace{1em}
+%    As a result they give band structures and orbital energies comparable to state-of-the-art GW
+% 
+%    \vspace{1em}
+%    We have just released \texttt{koopmans}, a package that contains everything necessary to run calculations using Koopmans functionals without expert knowledge
+% 
+%    % Koopmans functionals are a class of functionals that aim to reproduce spectral properties (charged excitations) and total energies on the same footing by enforcing a generalized piecewise linearity condition.
+% 
+%    % Koopmans functionals give band structures and orbital energies as accurate as state-of-the-art GW, at a fraction of the computational cost
+% 
+% \end{frame}
 
-   % Koopmans functionals are a class of functionals that aim to reproduce spectral properties (charged excitations) and total energies on the same footing by enforcing a generalized piecewise linearity condition.
-
-   % Koopmans functionals give band structures and orbital energies as accurate as state-of-the-art GW, at a fraction of the computational cost
-
-\end{frame}
-
-\begin{frame}{Failures of DFT}
-   \begin{itemize}
-      \item band gap is almost universally too small
-      \item problems with ``strongly correlated" systems (e.g. TMOs)
-      \item problems with vdW interactions
-      \item eigenvalues are formally meaningless
-      \item self-interaction error
-      \item static correlation error
-   \end{itemize}
-   % \onslide<3->{
-   % \begin{equation*}
-   %    V^x_i\psi_{n_i}(\mathbf{r}) = -\frac{1}{2}\sum_{i\neq j} \psi_{n_j}(\mathbf{r'})\int d\mathbf{r}' \frac{\psi^*_{n_j}(\mathbf{r}')\psi_{n_i}(\mathbf{r}')}{|\mathbf{r} - \mathbf{r}'|}
-   % \end{equation*}
-   % }
-\end{frame}
+% \begin{frame}{Failures of DFT}
+%    \begin{itemize}
+%       \item band gap is almost universally too small
+%       \item problems with ``strongly correlated" systems (e.g. TMOs)
+%       \item problems with vdW interactions
+%       \item eigenvalues are formally meaningless
+%       \item self-interaction error
+%       \item static correlation error
+%    \end{itemize}
+%    % \onslide<3->{
+%    % \begin{equation*}
+%    %    V^x_i\psi_{n_i}(\mathbf{r}) = -\frac{1}{2}\sum_{i\neq j} \psi_{n_j}(\mathbf{r'})\int d\mathbf{r}' \frac{\psi^*_{n_j}(\mathbf{r}')\psi_{n_i}(\mathbf{r}')}{|\mathbf{r} - \mathbf{r}'|}
+%    % \end{equation*}
+%    % }
+% \end{frame}
 
 \begin{frame}{Self-interaction error}
+   \nocite{Dabo2010,Borghi2014,Nguyen2018,Colonna2018,Colonna2019,DeGennaro2022,Colonna2022}
    % Koopman's theorem\blfootcite{Koopmans1934a}: changes in energy upon removal of electrons from unrelaxed HF orbitals: $\epsilon_{i\sigma} = - \Delta E_{i\sigma}$
    % % at least for unrelaxed Hartree Fock
 
@@ -388,266 +409,198 @@
          \end{onlyenv}
       \end{center}
 
-      \only<3>{\footnotesize Consequences for band gaps, densities, band structures, spectra...}
    \end{overlayarea}
 
    \blfootcite{Cohen2008,Li2017}
 
 \end{frame}
 
-\begin{frame}{Koopmans spectral functionals: comparing}
-   \small
-   \renewcommand{\arraystretch}{1.5}
-   \rowcolors{1}{seaborn_bg_grey}{seaborn_bg_grey_half}
-   \begin{tabularx}{\columnwidth}{L L L}
-                                                & \textbf{DFT+\emph{U}}                                                       & \textbf{Koopmans}                                                                                                         \\
-      \hline
-      designed to correct SIE, as defined by... & erroneous global curvature in total energies                                & dependence of $\varepsilon_i$ on $f_i \ \forall i$ (canonical orbitals)                                                   \\
-      by construction...                        & corrects local curvature in total energies                                  & removes dependence of $\varepsilon_i$ on $f_i$ and guarantees $\varepsilon_i = E_i(N\pm 1) - E(N)$ (variational orbitals) \\
-      correction applied to...                  & selected subspaces only (e.g. \emph{3d} orbitals)                           & the entire system                                                                                                         \\
-      orbitals defined by...                    & Hubbard projectors (atom-centred, frozen, incomplete)                       & variational (minimising) orbitals                                                                                         \\
-      corrective parameters are...              & $\{U^I\}$, defined with respect to charge-neutral excitations (if using LR) & $\{\alpha_i\}$, defined with respect to charged excitations                                                               \\
-   \end{tabularx}
-\end{frame}
-
-\begin{frame}{Outline}
-   How can we address self-interaction in a computationally efficient way?
-
-   $\longrightarrow$ Koopmans spectral functionals
-
-   \begin{itemize}
-      \item theory
-      \item results
-      \item outstanding problems
-      \item future directions and lessons we can learn
-   \end{itemize}
-
-   By way of introduction: DFT+\emph{U}
-
-\end{frame}
+% \begin{frame}{Koopmans functionals: theory}
+%    \hbox{
+%       \begin{minipage}{0.6\textwidth}
+%          Key idea: construct a functional such that the orbital energies
+%          \begin{equation*}
+%             \varepsilon^\mathsf{Koopmans}_i = \braopket{\varphi_i}{H}{\varphi_i} = \partial E_\mathsf{Koopmans}/\partial f_i
+%          \end{equation*}
+%          possess two key properties:
+%          \begin{itemize}
+%             \item<2-> they are independent of the corresponding occupancies $f_i$ \onslide<3->{($\Leftrightarrow$ $E$ is linear in $f_i$, $\Rightarrow E$ is linear in $N$)}
+%             \item<4-> they are equal to the corresponding total energy difference $E_i(N-1) - E(N)$ \onslide<5->{$\rightarrow$ orbital energies have meaning, are more accurate}
+%          \end{itemize}
+%          %
+%       \end{minipage}
+% 
+%       \begin{minipage}{0.35\textwidth}
+%          \centering
+%          \only<6>{
+%             \includegraphics[height=0.6\textheight]{figures/fig_gw100_dscf_cf_ks.png}
+%          }
+%       \end{minipage}
+%    }
+% \end{frame}
 
 \begin{frame}{Koopmans functionals: theory}
-   \hbox{
-      \begin{minipage}{0.6\textwidth}
-         Key idea: construct a functional such that the orbital energies
-         \begin{equation*}
-            \varepsilon^\mathsf{Koopmans}_i = \braopket{\varphi_i}{H}{\varphi_i} = \partial E_\mathsf{Koopmans}/\partial f_i
-         \end{equation*}
-         possess two key properties:
-         \begin{itemize}
-            \item<2-> they are independent of the corresponding occupancies $f_i$ \onslide<3->{($\Leftrightarrow$ $E$ is linear in $f_i$, $\Rightarrow E$ is linear in $N$)}
-            \item<4-> they are equal to the corresponding total energy difference $E_i(N-1) - E(N)$ \onslide<5->{$\rightarrow$ orbital energies have meaning, are more accurate}
-         \end{itemize}
-         %
-      \end{minipage}
 
-      \begin{minipage}{0.35\textwidth}
-         \centering
-         \only<6>{
-            \includegraphics[height=0.6\textheight]{figures/fig_gw100_dscf_cf_ks.png}
-         }
-      \end{minipage}
-   }
-\end{frame}
-\begin{frame}
-
-   \vspace{1ex}
-   \onslide<7->{
-      The resulting functional:
-      \begin{align*}
-          & E_\mathsf{Koopmans} [\rho,
-            %\only<7>{\textcolor{red}}
-            {\{f_i\}}, {\{\alpha_i\}}]
-         = \only<8>{\textcolor{red}}{E_{DFT}[\rho]}
-         + \sum_i
-         % \only<9->{\textcolor{red}}
-         {\alpha_i}
-         \left(
-         \only<9>{\textcolor{red}}{- \int^{f_i}_{0} \varepsilon_i(f) df}
-         \only<10>{\textcolor{red}}{+ f_i \int_0^1 \varepsilon_i(f) df}
-         \right)
-      \end{align*}
-   }
-   \begin{minipage}{0.35\textwidth}
-      \centering
-      \only<6>{
-         \includegraphics[height=0.6\textheight]{figures/fig_gw100_dscf_cf_ks.png}
-      }
-      \only<1-5,7>{
-         \includegraphics[height=0.6\textheight]{figures/curvature_plot/fig_en_curve_koopmans_step0.pdf}
-      }
-
-      \only<8>{
-         \includegraphics[height=0.6\textheight]{figures/curvature_plot/fig_en_curve_koopmans_step1.pdf}
-      }
-
-      \only<9>{
-         \includegraphics[height=0.6\textheight]{figures/curvature_plot/fig_en_curve_koopmans_step2.pdf}
-      }
-
-      \only<10->{
-         \includegraphics[height=0.6\textheight]{figures/curvature_plot/fig_en_curve_koopmans_step3.pdf}
-      }
-   \end{minipage}
-   % \onslide<10->{
-   %    \begin{equation*}
-   %       \frac{d E}{d f_i}
-   %       \approx
-   %       \alpha_i \frac{\partial E}{\partial f_i}
-   %       \onslide<11->{
-   %          \Longrightarrow \varepsilon_i^\mathsf{Koopmans} = \frac{\partial E_\mathsf{Koopmans}}{\partial f_i}  \approx E_i(N-1) - E(N)}
-   %    \end{equation*}
-   % }
-   \blfootcite{Dabo2010,Borghi2014,Colonna2019}
-\end{frame}
-
-\begin{frame}{Koopmans spectral functionals: comparing}
-   \small
-   \renewcommand{\arraystretch}{1.5}
-   \rowcolors{1}{seaborn_bg_grey}{seaborn_bg_grey_half}
-   \begin{tabularx}{\columnwidth}{L L L}
-                                                & \textbf{DFT+\emph{U}}                                                       & \textbf{Koopmans}                                                                                                           \\
-      \hline
-      designed to correct SIE, as defined by... & erroneous global curvature in total energies                                & \leavevmode\onslide<2->{dependence of $\varepsilon_i$ on $f_i \ \forall i$}                                                 \\
-      by construction...                        & corrects local curvature in total energies                                  & \leavevmode\onslide<3->{removes dependence of $\varepsilon_i$ on $f_i$ and guarantees $\varepsilon_i = E_i(N\pm 1) - E(N)$} \\
-      correction applied to...                  & selected subspaces only (e.g. \emph{3d} orbitals)                           & \leavevmode\onslide<4->{the entire system}                                                                                  \\
-      orbitals defined by...                    & Hubbard projectors (atom-centred, frozen, incomplete)                       &                                                                                                                             \\
-      corrective parameters are...              & $\{U^I\}$, defined with respect to charge-neutral excitations (if using LR) &
-   \end{tabularx}
-\end{frame}
-
-\begin{frame}{Koopmans spectral functionals: theory}
-   \begin{equation*}
-      E_\mathsf{Koopmans}[\rho,\only<2-3>{\textcolor{red}}{\{f_i\}}, \only<5->{\textcolor{red}}{\{\alpha_i\}}] = E_{DFT}[\rho]
+   \vspace{-1.5ex}
+   \begin{align*}
+      E_\mathsf{Koopmans}[\rho,\only<6>{\textcolor{red}}{\{f_i\}}, \only<7->{\textcolor{red}}{\{\alpha_i\}}]
+      = \only<2>{\textcolor{red}}{E_{DFT}[\rho]}
       + \sum_i
-      \only<5->{\textcolor{red}}
+      \only<7->{\textcolor{red}}
       {\alpha_i}
-      \left(
-      - \int^{f_i}_{0} \varepsilon_i(f) df
-      + f_i \int_0^1 {\varepsilon_i(f)} df
-      \right)
-   \end{equation*}
-
-   \onslide<3->{
-      \begin{equation*}
-         v^\mathrm{KI}_i/\alpha_i = - E_{\mathrm{H}}\left[n_{i}\right]
-         + E_{\mathrm{xc}}\left[\rho\right]
-         - E_{\mathrm{xc}}\left[\rho-n_{i}\right]
-         - \int d\mathbf{r'}
-         v_\mathrm{xc}(\mathbf{r}', [\rho])
-         n_{i}(\mathbf{r}')
-      \end{equation*}
-   }
-
-   \vspace{-1ex}
-   \begin{itemize}
-      \item<2-> orbital density dependence
-      \item<4-> variational (localised, minimising) vs canonical (delocalised, diagonalising) orbitals
-      \item<5-> screening
-   \end{itemize}
-   \begin{overlayarea}{\textwidth}{0.4\textheight}
-      \only<4>{
-         \begin{figure}[t]
-            \centering
-            \begin{subfigure}{0.3\textwidth}
-               \includegraphics[height=\columnwidth,angle=90]{figures/fig_nguyen_variational_orbital.png}
-               \caption{variational}
-            \end{subfigure}
-            \hspace{0.1\textwidth}
-            \begin{subfigure}{0.3\textwidth}
-               \includegraphics[height=\columnwidth,angle=90]{figures/fig_nguyen_canonical_orbital.png}
-               \caption{canonical}
-            \end{subfigure}
-         \end{figure}
+      \Biggl(
+      -
+      \underbrace{
+         \only<3>{\textcolor{red}}{\int^{f_i}_{0} \varepsilon_i(f) df}
+      }_{
+         \substack{\text{removes}  \\ \text{curvature}}
       }
+      +
+      \underbrace{
+         \only<4>{\textcolor{red}}{f_i \int_0^1 \varepsilon_i(f) df}
+      }_{
+         \substack{\text{restores} \\ \text{linearity}}
+      }
+      \Biggr)
+   \end{align*}
+   \begin{overlayarea}{\textwidth}{0.5\paperheight}
+      \centering
+      \only<1-4>{
+         \vspace{-1em}
+      }
+      \only<1>{
+         \includegraphics[height=0.5\textheight]{figures/curvature_plot/fig_en_curve_koopmans_step0.pdf}
+      }
+
+      \only<2>{
+         \includegraphics[height=0.5\textheight]{figures/curvature_plot/fig_en_curve_koopmans_step1.pdf}
+      }
+
+      \only<3>{
+         \includegraphics[height=0.5\textheight]{figures/curvature_plot/fig_en_curve_koopmans_step2.pdf}
+      }
+
+      \only<4>{
+         \includegraphics[height=0.5\textheight]{figures/curvature_plot/fig_en_curve_koopmans_step3.pdf}
+      }
+
       \only<5->{
+         \raggedright
+         Differences to semi-local functionals:
+         \begin{itemize}
+            \item<6-> orbital density dependence (can use MLWFs)
+            \item<7-> screening
+         \end{itemize}
+      }
+      \only<6>{
+         \begin{equation*}
+            v^\mathrm{KI}_{\textcolor{red}{i}}/\alpha_i = - E_{\mathrm{H}}\left[\textcolor{red}{n_{i}}\right]
+            + E_{\mathrm{xc}}\left[\rho\right]
+            - E_{\mathrm{xc}}\left[\rho-\textcolor{red}{n_{i}}\right]
+            - \int d\mathbf{r'}
+            v_\mathrm{xc}(\mathbf{r}', [\rho])
+            \textcolor{red}{n_{i}}(\mathbf{r}')
+         \end{equation*}
+      }
+      \only<7->{
          \begin{equation*}
             \frac{d E}{d f_i}
             \approx
             \alpha_i \frac{\partial E}{\partial f_i}
-            \onslide<6->{
-               \Longrightarrow \varepsilon_i^\mathsf{Koopmans} = \frac{\partial E_\mathsf{Koopmans}}{\partial f_i}  \approx E_i(N-1) - E(N)}
+            \onslide<8->{
+               \Rightarrow \varepsilon_i^\mathsf{Koopmans} = \frac{\partial E_\mathsf{Koopmans}}{\partial f_i}  \approx E_i(N-1) - E(N)}
          \end{equation*}
       }
+
    \end{overlayarea}
-   \blfootcite{Nguyen2018}
+   \blfootcite{Dabo2010,Borghi2014,Colonna2019}
 \end{frame}
 
-\begin{frame}{Koopmans spectral functionals: comparing}
+
+% \begin{frame}{Koopmans functionals: comparing}
+%    \small
+%    \renewcommand{\arraystretch}{1.5}
+%    \rowcolors{1}{seaborn_bg_grey}{seaborn_bg_grey_half}
+%    \begin{tabularx}{\columnwidth}{L L L}
+%                                                 & \textbf{DFT+\emph{U}}                                                       & \textbf{Koopmans}                                                                                                                                                   \\
+%       \hline
+%       designed to correct SIE, as defined by... & erroneous global curvature in total energies                                & dependence of $\varepsilon_i$ on $f_i \ \forall i$ \leavevmode\onslide<4->{\textcolor{red}{(canonical orbitals)}}                                                   \\
+%       by construction...                        & corrects local curvature in total energies                                  & removes dependence of $\varepsilon_i$ on $f_i$ and guarantees $\varepsilon_i = E_i(N\pm 1) - E(N)$ \leavevmode\onslide<4->{\textcolor{red}{(variational orbitals)}} \\
+%       correction applied to...                  & selected subspaces only (e.g. \emph{3d} orbitals)                           & the entire system                                                                                                                                                   \\
+%       orbitals defined by...                    & Hubbard projectors (atom-centred, frozen, incomplete)                       & \leavevmode\onslide<2->{variational (minimising) orbitals}                                                                                                          \\
+%       corrective parameters are...              & $\{U^I\}$, defined with respect to charge-neutral excitations (if using LR) & \leavevmode\onslide<3->{$\{\alpha_i\}$, defined with respect to charged excitations}                                                                                \\
+%    \end{tabularx}
+% \end{frame}
+
+\begin{frame}{Koopmans functionals: results for molecules}
    \small
-   \renewcommand{\arraystretch}{1.5}
-   \rowcolors{1}{seaborn_bg_grey}{seaborn_bg_grey_half}
-   \begin{tabularx}{\columnwidth}{L L L}
-                                                & \textbf{DFT+\emph{U}}                                                       & \textbf{Koopmans}                                                                                                                                                   \\
-      \hline
-      designed to correct SIE, as defined by... & erroneous global curvature in total energies                                & dependence of $\varepsilon_i$ on $f_i \ \forall i$ \leavevmode\onslide<4->{\textcolor{red}{(canonical orbitals)}}                                                   \\
-      by construction...                        & corrects local curvature in total energies                                  & removes dependence of $\varepsilon_i$ on $f_i$ and guarantees $\varepsilon_i = E_i(N\pm 1) - E(N)$ \leavevmode\onslide<4->{\textcolor{red}{(variational orbitals)}} \\
-      correction applied to...                  & selected subspaces only (e.g. \emph{3d} orbitals)                           & the entire system                                                                                                                                                   \\
-      orbitals defined by...                    & Hubbard projectors (atom-centred, frozen, incomplete)                       & \leavevmode\onslide<2->{variational (minimising) orbitals}                                                                                                          \\
-      corrective parameters are...              & $\{U^I\}$, defined with respect to charge-neutral excitations (if using LR) & \leavevmode\onslide<3->{$\{\alpha_i\}$, defined with respect to charged excitations}                                                                                \\
-   \end{tabularx}
-\end{frame}
-
-\begin{frame}{Koopmans spectral functionals: IPs}
    Ionisation potentials $ = E(N-1) - E(N) \stackrel{?}{=} -\varepsilon_{HO}$ of 100 molecules (the GW100 set) cf. CCSD(T)
    \begin{center}
       \includegraphics[height=0.23\textwidth]{figures/colonna_2019_gw100_ip}
-      \onslide<2->{\includegraphics[height=0.23\textwidth]{figures/colonna_2019_gw100_deeper}}
+      % \onslide<2->{\includegraphics[height=0.23\textwidth]{figures/colonna_2019_gw100_deeper}}
    \end{center}
+
+   \vspace{-3ex}
+   Ultraviolet photoemission spectra
+   \begin{center}
+      \includegraphics[height=0.4\textheight]{figures/fig_nguyen_prl_spectra.png}
+   \end{center}
+   \blfootcite{Nguyen2015}
 
    \blfootcite{Colonna2018,vanSetten2015}
 \end{frame}
 
-\begin{frame}{Koopmans spectral functionals: EAs}
-   Electron affinities $ = E(N) - E(N+1) \stackrel{?}{=} -\varepsilon_{LU}$ of molecules cf. CCSD(T)/exp
-   \vspace{2ex}
+% \begin{frame}{Koopmans functionals: results for molecules}
+%    Electron affinities $ = E(N) - E(N+1) \stackrel{?}{=} -\varepsilon_{LU}$ of molecules cf. CCSD(T)/exp
+%    \vspace{2ex}
+% 
+%    \small
+%    \begin{center}
+%       For 15 of the GW100 molecules with bound LUMOs
+% 
+%       \includegraphics[height=0.5\textheight]{figures/fig_gw100_ea_mae_mse.pdf}
+% 
+%       \textcolor{seaborn_bg_grey_darker}{\footnotesize Linscott et al. (in prep)}
+%    \end{center}
+% \end{frame}
 
-   \small
-   \begin{center}
-      \begin{tabular}{c c}
-         For 15 of the GW100 molecules with bound LUMOs                            &
-         For the NaCl molecule                                                       \\
-         \includegraphics[height=0.5\textheight]{figures/fig_gw100_ea_mae_mse.pdf} &
-         \includegraphics[height=0.5\textheight]{figures/fig_NaCl_eas.pdf}           \\
+\begin{frame}{Koopmans functionals: results for solids}
+   \begin{minipage}[c]{0.35\textwidth}
+      \includegraphics[width=\textwidth]{figures/fig_nguyen_prx_bandgaps.png}
+   \end{minipage}
+   \hspace{1em}
+   \begin{minipage}[c]{0.6\textwidth}
+
+      \footnotesize
+      Mean absolute error (eV) across prototypical semiconductors and insulators
+
+      \vspace{1ex}
+      \begin{tabular}{c S[table-format = 2.2] S[table-format = 2.2] S[table-format = 2.2] S[table-format = 2.2] S[table-format = 2.2] S[table-format = 2.2] S[table-format = 2.2] S[table-format = 2.2] S[table-format = 2.2]}
+                          & {PBE} & {G\textsubscript{0}W\textsubscript{0}} & {KI} & {KIPZ} & {QSG$\tilde{\mathrm{W}}$} \\
+         \midrule
+         \midrule
+         $E_\mathrm{gap}$ & 2.54  & 0.56                                   & 0.27 & 0.22   & 0.18                      \\
+         %                                  & {MAPE (\%)} & 48.28 & 12.10                                  & 7.09 & 5.37   & 4.46                      \\
+         \midrule
+         IP               & 1.09  & 0.39                                   & 0.19 & 0.21   & 0.49                      \\
+         %                                  & {MAPE (\%)} & 15.58 & 5.71                                   & 2.99 & 3.14   & 7.41
       \end{tabular}
-      \textcolor{seaborn_bg_grey_darker}{Figures from Linscott et al. (in prep)}
-   \end{center}
+   \end{minipage}
 
-
+   \blfootcite{Nguyen2018}
 \end{frame}
 
-
-\begin{frame}{Koopmans spectral functionals: spectra}
-   \begin{center}
-      \includegraphics[height=0.5\textheight]{figures/fig_nguyen_prl_spectra.png}
-   \end{center}
-   \blfootcite{Nguyen2015}
-\end{frame}
-
-\begin{frame}{\normalsize Koopmans spectral functionals: band structures}
+\begin{frame}{Koopmans functionals: results for solids}
+   \vspace{-0.5em}
    \begin{figure}[t]
       \centering
       \begin{subfigure}{0.45\textwidth}
          \includegraphics[width=\columnwidth]{figures/Si_kipz_bands.png}
          \caption{Si, KIPZ}
-         \footnotesize
-         \begin{tabularx}{\columnwidth}{l C C C C}
-                                  & PBE  & qsGW & KIPZ & exp. \\
-            \hline
-            $E_\mathrm{gap}$ (eV) & 0.55 & 1.30 & 1.27 & 1.22 \\
-            \vphantom{Test}
-         \end{tabularx}
       \end{subfigure}
       \begin{subfigure}{0.45\textwidth}
          \includegraphics[width=\columnwidth]{figures/GaAs_ki_bands.png}
          \caption{GaAs, KI}
-         \footnotesize
-         \begin{tabularx}{\columnwidth}{l C C C C}
-                                                 & PBE   & qsGW & KI    & exp.  \\
-            \hline
-            $E_\mathrm{gap}$ (eV)                & 0.50  & 1.51 & 1.68  & 1.57  \\
-            $\langle \varepsilon_d \rangle$ (eV) & -14.9 &      & -17.0 & -18.9
-         \end{tabularx}
       \end{subfigure}
       % \begin{subfigure}{\textwidth}
       %    \begin{tabularx}{\columnwidth}{C C C C C C C}
@@ -658,10 +611,22 @@
       %    \end{tabularx}
       % \end{subfigure}
    \end{figure}
-   \blfootcite{DeGennaro2021}
+   \begin{center}
+      \footnotesize
+      \begin{tabular}{l l S[table-format = 2.2] S[table-format = 2.2] S[table-format = 2.2] S[table-format = 2.2] S[table-format = 2.2] S[table-format = 2.2] S[table-format = 2.2] S[table-format = 2.2] S[table-format = 2.2]}
+                               &                                  & {PBE} & {QSG$\tilde{\mathsf{W}}$} & {KI} & {pKIPZ} & {KIPZ} & {exp} \\
+         \midrule
+         \midrule
+         {Si}                  & $E_\mathrm{gap}$                 & 0.55  & 1.24                      & 1.18 & 1.17    & 1.19   & 1.17  \\
+         \midrule
+         \multirow{2}{*}{GaAs} & $E_\mathrm{gap}$                 & 0.50  & 1.61                      & 1.53 & 1.49    & 1.50   & 1.52  \\
+                               & $\langle \varepsilon_d \rangle $ & 14.9  & 17.6                      & 16.9 &         & 17.7   & 18.9
+      \end{tabular}
+   \end{center}
+   \blfootcite{DeGennaro2022}
 \end{frame}
 
-\begin{frame}{\normalsize Koopmans spectral functionals: band structures}
+\begin{frame}{Koopmans functionals: results for solids}
    \begin{figure}[t]
       \centering
       \begin{subfigure}{0.3\textwidth}
@@ -694,65 +659,191 @@
       %    red line, respectively.
       %    Table: Band gap and position of Zn $d$ states with respect to the top of the valence band at different level of theory compared to experimental and GW results from Ref.~\onlinecite{shishkin_accurate_2007}.}
    \end{figure}
-   \blfootcite{Colonna2021}
-\end{frame}
-
-\begin{frame}{\small Koopmans spectral functionals: practical limitations}
-   \begin{itemize}
-      \item determining $\{\alpha_i\}$
-      \item how to treat metals?
-      \item limitations of the orbital-density-dependent framework
-   \end{itemize}
+   \blfootcite{Colonna2022}
 \end{frame}
 
 
-\begin{frame}{\small Koopmans spectral functionals: the workflow(s)}
-   \small Screening coefficients $\{\alpha_i\}$ must be determined first, either \onslide<2->{(a) via $\Delta$SCF calculations (using a supercell) or} \onslide<4->{(b) via DFPT\footcite{Colonna2018} (using a primitive cell)}
+\begin{frame}{\small Koopmans functionals: the workflow(s)}
+   \small Screening coefficients $\{\alpha_i\}$ must be determined first, via\dots
+
    \vspace{1ex}
 
-   \onslide<3->{
-      Supercell implementation
+   \onslide<2->{
+      (a) finite difference calculations using a supercell
 
       \vspace{-2ex}
-      \adjustbox{width=\textwidth}{\input{supercell_workflow.tex}}
+      \adjustbox{width=\textwidth}{\input{supercell_workflow.tex}\input{supercell_workflow_ml.tex}\end{tikzpicture}}
    }
 
    \vspace{-1.5ex}
-   \onslide<5->{
-      \noindent Primitive cell implementation
+   \onslide<3->{
+      (b) DFPT using a primitive cell
 
       \vspace{-2ex}
       \adjustbox{width=0.655\textwidth}{\input{primitive_workflow.tex}}
    }
 
-   \onslide<6>{
-      \vspace{-0.375\paperheight}
-      \begin{flushright}
-         \begin{tcolorbox}[enhanced jigsaw, width=4cm, opacityback=0, colframe=seaborn_red, coltext=seaborn_red, left=3pt, bottom=3pt, top=3pt, right=3pt, tikz={rotate=30,transform shape}, boxrule=1.5mm]
-            \begin{center}
-               \includegraphics[height=1cm]{./figures/qe_logo_high_res_cropped.jpg}
-               \bf \huge\ \raisebox{0.3cm}{+}\,
-               \includegraphics[height=1cm]{./figures/python_logo.png}
+   \onslide<4->{(c) via machine learning (resulting band gaps accurate to $\sim$ 0.02 eV)} \blfootcite{DeGennaro2022,Colonna2022,Schubert2022}
+   % \onslide<6>{
+   %    \vspace{-0.375\paperheight}
+   %    \begin{flushright}
+   %       \begin{tcolorbox}[enhanced jigsaw, width=4cm, opacityback=0, colframe=seaborn_red, coltext=seaborn_red, left=3pt, bottom=3pt, top=3pt, right=3pt, tikz={rotate=30,transform shape}, boxrule=1.5mm]
+   %          \begin{center}
+   %             \includegraphics[height=1cm]{./figures/qe_logo_high_res_cropped.jpg}
+   %             \bf \huge\ \raisebox{0.3cm}{+}\,
+   %             \includegraphics[height=1cm]{./figures/python_logo.png}
 
-               \bf \large OUT NOW!
-            \end{center}
-         \end{tcolorbox}
-      \end{flushright}
-   }
+   %             \bf \large OUT NOW!
+   %          \end{center}
+   %       \end{tcolorbox}
+   %    \end{flushright}
+   % }
 
 \end{frame}
 
-\begin{frame}{\small Koopmans spectral functionals: consequences of ODD}
-   \begin{itemize}[<+(1)->]
-      \item a natural generalisation in the direction of spectral functional theory\footcite{Ferretti2014}
-      \item ODD functional means that we know $\hat H \ket{\varphi_i}$ for variational orbitals $\{\ket{\varphi_i}\}$ but we don't know $\hat H$ in general
-      \item Difficulties when it comes to calculating transport properties/spectra
-      \item Perhaps a DFT+\emph{U}-projector approach is more convenient?
+\begin{frame}{The problem}
+
+   \texttt{kcw.x} (DFPT implementation) is distributed in Quantum ESPRESSO v7.1 onwards
+
+   \vspace{4ex}
+
+   But complicated workflows mean that...
+   \begin{itemize}
+      \item lots of different codes that need to handshake
+      \item lots of scope for human error
+      \item reproducibility becomes difficult
    \end{itemize}
 
+   Our solution...
+
 \end{frame}
 
-\begin{frame}{\small Koopmans spectral functionals: off-diagonal occupancies}
+\begin{frame}{}
+   \begin{center}
+      \includegraphics[width=0.7\textwidth]{figures/koopmans_grey_on_transparent.png}
+   \end{center}
+
+   \begin{itemize}
+      \item beta version just released
+      \item implementations of Koopmans functionals
+      \item automated workflows
+            \begin{itemize}
+               \item start-to-finish Koopmans calculations
+               \item Wannierisation
+               \item dielectric tensor
+               \item convergence tests
+               \item ...
+            \end{itemize}
+      \item built on top of ASE\footcite{Larsen2017}
+      \item does not require expert knowledge
+   \end{itemize}
+\end{frame}
+
+\begin{frame}{koopmans: the input file}
+   \begin{minipage}[t]{0.475\columnwidth}
+      \inputminted[fontsize=\tiny,breaklines,lastline=20]{json}{scripts/si.json}
+   \end{minipage}
+   \hspace{0.025\textwidth}
+   \begin{minipage}[t]{0.475\columnwidth}
+      \inputminted[fontsize=\tiny,breaklines,firstline=21]{json}{scripts/si.json}
+   \end{minipage}
+\end{frame}
+
+% \begin{frame}{koopmans: the output file}
+%    \vspace{-2ex}
+%    \only<1>{
+%       \inputminted[fontsize=\scriptsize,breaklines]{text}{scripts/si_ki_full.out}
+%    }
+%    \only<2>{
+%       \inputminted[fontsize=\scriptsize,breaklines,firstline=25]{text}{scripts/si_ki_full.out}
+%    }
+%    \only<3>{
+%       \inputminted[fontsize=\scriptsize,breaklines,firstline=50]{text}{scripts/si_ki_full.out}
+%    }
+%    \only<4>{
+%       \inputminted[fontsize=\scriptsize,breaklines,firstline=75]{text}{scripts/si_ki_full.out}
+%    }
+% \end{frame}
+
+\begin{frame}{koopmans is scriptable}
+   \vspace{-2ex}
+   \inputminted[fontsize=\scriptsize,breaklines]{python}{scripts/si.py}
+\end{frame}
+
+\begin{frame}{Take home messages}
+
+   \includegraphics[height=0.2\paperheight]{figures/colonna_2019_gw100_ip.jpeg}
+   \hfill
+   \includegraphics[height=0.2\paperheight]{figures/fig_nguyen_prx_bandgaps.png}
+   \hfill
+   \adjustbox{height=0.2\paperheight}{\input{supercell_workflow.tex}\end{tikzpicture}}
+
+   \begin{itemize}
+      \item Koopmans functionals are a class of functionals that treat spectral properties on the same footing as total energy differences (via GPWL)
+      \item they can give orbital energies and band structures with comparable accuracy to state-of-the-art GW
+      \item the release of \texttt{koopmans} means you don't need expert knowledge to run Koopmans functional calculations
+   \end{itemize}
+
+   \begin{center}
+      \scriptsize
+      Want to find out more? Go to \url{koopmans-functionals.org}
+
+      Free online school Nov 9-11 2022 \emph{Advanced Quantum ESPRESSO tutorial: Hubbard and Koopmans functionals from linear response}. Register at \url{https://sites.google.com/view/hubbard-koopmans/home}
+
+      Follow \includegraphics[height=\fontcharht\font`\B]{figures/Twitter_Bird.png} \textcolor{twitter_blue}{@ed\_linscott} for updates | Slides available at \url{elinscott.github.io}
+   \end{center}
+
+\end{frame}
+
+% \begin{frame}{Acknowledgements}
+%    \begin{center}
+%       \footnotesize
+%       \begin{tabularx}{\textwidth}{CCCC}
+%          \includegraphics[height = 0.3\paperheight]{figures/nicola_marzari.jpg}     &
+%          \includegraphics[height = 0.3\paperheight]{figures/nicola_colonna.png}     &
+%          \includegraphics[height = 0.3\paperheight]{figures/riccardo_degennaro.jpg} &
+%          \includegraphics[height = 0.3\paperheight]{figures/yannick_schubert.jpg}     \\
+%          % \includegraphics[height = 0.2\paperheight]{figures/daniel_cole.jpeg}       &
+%          % \includegraphics[height = 0.2\paperheight]{figures/mike_payne.jpeg}        &
+%          % \includegraphics[height = 0.2\paperheight]{figures/david_oregan.jpg}         \\
+%          Nicola Marzari                                                             &
+%          Nicola Colonna                                                             &
+%          Riccardo De~Gennaro                                                        &
+%          Yannick Schubert                                                             \\
+%       \end{tabularx}
+%    \end{center}
+%    \begin{center}
+%       \includegraphics[height = 0.1\paperheight]{/home/elinscott/Pictures/snsf_logos/SNF_logo_standard_print_color_pos_e.eps}
+%       \hspace{1em}
+%       \includegraphics[height = 0.1\paperheight]{figures/marvel_trimmed.png}
+%    \end{center}
+%    % \begin{multicols}{2}
+%    %   \small
+%    %   \printbibliography
+%    %   \normalsize
+%    % \end{multicols}
+%    \vspace{2ex}
+%    \scriptsize
+% 
+%    \setbeamercolor*{bibliography entry title}{fg=black}
+%    \setbeamercolor*{bibliography entry author}{fg=black}
+%    \setbeamercolor*{bibliography entry location}{fg=black}
+%    \setbeamercolor*{bibliography entry note}{fg=black}
+% 
+%    \vspace{2ex}
+%    \scriptsize
+% \end{frame}
+
+\backupbegin
+\begin{frame}{}
+
+   \begin{center}
+      \huge SPARE SLIDES
+   \end{center}
+
+\end{frame}
+
+\begin{frame}{Koopmans functionals: off-diagonal occupancies}
    \begin{block}{Recap from earlier}
       Key idea: construct a functional such that the \emph{variational} orbital energies
       \begin{equation*}
@@ -765,102 +856,104 @@
       \end{itemize}
    \end{block}
 
-   \onslide<2>{zero band gap $\rightarrow$ occupancy matrix for variational orbitals is off-diagonal}
+   zero band gap $\rightarrow$ occupancy matrix for variational orbitals is off-diagonal
 \end{frame}
 
-\begin{frame}{Summary: Koopmans spectral functionals}
-   \begin{columns}
-      \begin{column}{0.45\textwidth}
-         \includegraphics[width=\columnwidth]{figures/colonna_2019_gw100_ip.jpeg}
-         \begin{center}
-            \includegraphics[width=0.45\columnwidth]{figures/ZnO_lda.png}
-            \includegraphics[width=0.45\columnwidth]{figures/ZnO_ki.png}
-         \end{center}
-      \end{column}
-      \begin{column}{0.45\textwidth}
-         \begin{itemize}
-            \item orbital-density-dependent corrective terms to semi-local DFT
-            \item comparable computational cost to DFPT
-            \item KS eigenvalues are meaningful
-            \item accuracy comparable to GW
-         \end{itemize}
-
-         caveats:
-         \begin{itemize}
-            \item orbital density dependence has limitations
-            \item complicated workflow (not for much longer!)
-            \item only for insulators
-         \end{itemize}
-
-      \end{column}
-   \end{columns}
-
-\end{frame}
-
-\begin{frame}{Summary: thoughts on the way forward}
-   For Koopmans...
-   \begin{itemize}
-      \item framing Koopmans with frozen-orbital/projector-like picture
-      \item prediction of $\alpha_i$
-      \item scope for addressing static correlation error
-      \item off-diagonal terms
-   \end{itemize}
-
-   For corrections to SIE more generally\dots
-   \begin{itemize}
-      \item we can gain ground by thinking about KS energies and not just total energies
-      \item indeed, KI corrects KS energies while leaving total energies untouched!
-   \end{itemize}
-
-\end{frame}
-
-\begin{frame}{Acknowledgements}
+\begin{frame}{Learning the screening parameters}
    \begin{center}
-      \footnotesize
-      \begin{tabularx}{\textwidth}{CCCCCC}
-         \includegraphics[height = 0.2\paperheight]{figures/nicola_marzari.jpg}   &
-         \includegraphics[height = 0.2\paperheight]{figures/nicola_colonna.png}   &
-         \includegraphics[height = 0.2\paperheight]{figures/yannick_schubert.jpg} &
-         \includegraphics[height = 0.2\paperheight]{figures/riccardo_degennaro.jpg} \\
-         % \includegraphics[height = 0.2\paperheight]{figures/daniel_cole.jpeg}       &
-         % \includegraphics[height = 0.2\paperheight]{figures/mike_payne.jpeg}        &
-         % \includegraphics[height = 0.2\paperheight]{figures/david_oregan.jpg}         \\
-         Nicola Marzari                                                           &
-         Nicola Colonna                                                           &
-         Riccardo De~Gennaro                                                      &
-         Yannick Schubert                                                           \\
-      \end{tabularx}
+      \begin{tikzpicture}
+         \node[inner sep=0pt] (water box) at (0,0)
+         {
+            \includegraphics[width=0.25\textwidth]{figures/orbital.emp.00191_cropped.png}
+         };
+         \node[below=0cm of water box] (density) {$\rho_i(\mathbf{r})$};
+         \node[right=0.2\textwidth of water box] (power spectrum) {
+            $
+               \begin{bmatrix}
+                  x_{0} \\
+                  x_{1} \\
+                  x_{2} \\
+                  \vdots
+               \end{bmatrix}
+            $
+         };
+         \path[line] (water box) -- node [midway, above, align=center] (decomposition) {power spectrum \\ decomposition} (power spectrum);
+         \node[right=0.2\textwidth of power spectrum] (screening parameter) {$\alpha_i$};
+         \path[line] (power spectrum) -- node [midway, above, align=center] (model) {ML model} (screening parameter);
+      \end{tikzpicture}
    \end{center}
+
+   \vspace{-2em}
+
+   \blfootcite{Schubert2022}
+
+\end{frame}
+
+
+\begin{frame}{Details of the power spectrum}
+   \begin{align*}
+      c^i_{nlm,k=\mathrm{orbital}} & =\int d\textbf{r} g_{nl}(r)Y_{lm}(\theta,\varphi)\rho^i(\textbf{r}-\textbf{R}^i) \\
+   \end{align*}
+
+   $g_{nl}$ = orthonormalised radial Gaussian basis functions
+
+   $Y_{lm}$ = spherical harmonics
+
+   \begin{align*}
+      p^i_{n_1n_2l,k_1k_2}=\pi \sqrt{\frac{8}{2l+1}}\sum\limits_m {c_{n_1lm,k_1}^{i *}}c_{n_2lm,k_2}^i \label{eq: power spectrum}
+   \end{align*}
+\end{frame}
+
+\begin{frame}{Learning the screening parameters}
    \begin{center}
-      \includegraphics[height = 0.1\paperheight]{figures/fig_snsf_logo.png}
-      \hspace{1em}
-      \includegraphics[height = 0.1\paperheight]{figures/fig_EPSRC.jpg}
-      \hspace{1em}
-      \includegraphics[height = 0.1\paperheight]{figures/fig_Rutherford_foundation.png}
-      \hspace{1em}
-      \includegraphics[height = 0.1\paperheight]{figures/fig_CCEIT.jpeg}
+
+      \includegraphics[height=0.7\paperheight]{figures/CsSnI3_calc_vs_pred_Edward.png}
+      \includegraphics[height=0.7\paperheight]{figures/convergence_analysis_Edward.png}
+
+      loss of accuracy of the band gap of $\sim$ 0.02 eV
+
+      (cf. when calculating screening parameters \emph{ab initio})
    \end{center}
-   % \begin{multicols}{2}
-   %   \small
-   %   \printbibliography
-   %   \normalsize
-   % \end{multicols}
-   \vspace{2ex}
-   Look out for our papers \& code release later this year (follow \includegraphics[height=\fontcharht\font`\B]{figures/Twitter_Bird.png} \textcolor{twitter_blue}{@ed\_linscott} for updates/get in touch for alpha access!)
 
-   \textcolor{red}{Shameless postdoc/fellowship plug?}
+   \blfootcite{Schubert2022}
 
-   \scriptsize
+\end{frame}
 
+
+
+\begin{frame}{Consequences of ODD}
+   \begin{itemize}
+      \item a natural generalisation in the direction of spectral functional theory\footcite{Ferretti2014}
+      \item variational (localised, minimising) vs canonical (delocalised, diagonalising) orbitals
+            \begin{figure}[t]
+               \centering
+               \begin{subfigure}{0.3\textwidth}
+                  \includegraphics[height=\columnwidth,angle=90]{figures/fig_nguyen_variational_orbital.png}
+                  \caption{variational}
+               \end{subfigure}
+               \hspace{0.1\textwidth}
+               \begin{subfigure}{0.3\textwidth}
+                  \includegraphics[height=\columnwidth,angle=90]{figures/fig_nguyen_canonical_orbital.png}
+                  \caption{canonical}
+               \end{subfigure}
+            \end{figure}
+      \item ODD functional means that we know $\hat H \ket{\varphi_i}$ for variational orbitals $\{\ket{\varphi_i}\}$ but we don't know $\hat H$ in general
+      \item Difficulties when it comes to calculating transport properties/spectra
+      \item Perhaps a DFT+\emph{U}-projector approach is more convenient?
+   \end{itemize}
+   \blfootcite{Nguyen2018}
+
+\end{frame}
+
+\begin{frame}{References}
    \setbeamercolor*{bibliography entry title}{fg=black}
    \setbeamercolor*{bibliography entry author}{fg=black}
    \setbeamercolor*{bibliography entry location}{fg=black}
    \setbeamercolor*{bibliography entry note}{fg=black}
+   \printbibliography
+   % For further reading on Koopmans functionals, see \cite{Dabo2010,Borghi2014,Nguyen2018,Colonna2018,Colonna2019,DeGennaro2022,Colonna2022}
 
-   \vspace{2ex}
-   \scriptsize
-   For further reading on Koopmans functionals, see\cite{Dabo2010,Borghi2014,Nguyen2018,Colonna2018,Colonna2019}
 \end{frame}
 
-
+\backupend
 \end{document}
