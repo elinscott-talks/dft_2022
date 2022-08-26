@@ -1,6 +1,9 @@
 import sys
 sys.path.append('/home/elinscott/Documents/notes/curvature_plot')
-from curvature_plotting import *
+from curvature_plotting import ENCurve
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
 
 def save(ax, name):
    ax.set_xlim([0.5, 3.5])
@@ -8,7 +11,7 @@ def save(ax, name):
    ax.set_xticks(range(1,4))
    ax.set_xticklabels(['$N-1$','$N$','$N+1$'])
    ax.set_xlabel('total number of electrons')
-   plt.subplots_adjust(left=0.1, right=0.95, top=0.95, bottom=0.15)
+   plt.subplots_adjust(left=0.17, right=0.83, top=0.95, bottom=0.15)
    plt.savefig(name)
 
 if __name__ == '__main__':
@@ -21,8 +24,9 @@ if __name__ == '__main__':
    i_orb = 2
 
    exact = ENCurve('exact', exact_e)
-   hf = ENCurve('Hartree-Fock', exact_e + 0.1 + 0.2*np.random.rand(len(exact_e)), curvature = -2)
-   sl = ENCurve('semi-local', exact_e - 0.1 - 0.2*np.random.rand(len(exact_e)), curvature = 1.5)
+   koop = ENCurve('Koopmans', exact_e)
+   sl = ENCurve('semi-local', exact_e, curvature=1.5) # - 0.1 - 0.2*np.random.rand(len(exact_e)), curvature = 1.5)
+   hf = ENCurve('Hartree-Fock', exact_e, curvature=-2.0) # + 0.1 + 0.2*np.random.rand(len(exact_e)), curvature = -2)
    
    f, ax = plt.subplots(1,1)
    plt.subplots_adjust(bottom=0.2)
@@ -43,7 +47,22 @@ if __name__ == '__main__':
    sl.plot(ax)
    save(ax, 'fig_en_curve_sl.pdf')
 
+   f2, ax2 = plt.subplots(1,1)
+   plt.subplots_adjust(bottom=0.2)
    # With annotations
+   koop.plot(ax2, ls='--')
+   sl.plot(ax2)
+   exact.plot_gradient(ax2, i_orb, forward=False, label=r'$\varepsilon_\mathrm{HO}(N) = E(N) - E(N-1)$', ha='left', label_dx=0.02, label_dy=0.02)
+   exact.plot_gradient(ax2, i_orb-1, forward=True, label=r'$\varepsilon_\mathrm{LU}(N-1)$', ha='left', label_dx=0.02, label_dy=0.02)
+
+   sl.plot_gradient(ax2, i_orb, forward=False, label=r'$\varepsilon_\mathrm{HO}(N) = \left.\frac{dE}{dN}\right|_{N = N^-}$', va='top', label_dx=-0.1, label_dy=-0.05)
+   sl.plot_gradient(ax2, i_orb-1, forward=True, label=r'$\varepsilon_\mathrm{LU}(N-1)$', ha='right', label_dx=-0.02)
+   save(ax2, 'fig_en_curve_gradients.pdf')
+   ax2.set_xlim([0.75, 2.25])
+   ax2.set_ylim([-0.25, 1.75])
+   plt.savefig('fig_en_curve_gradients_zoom.pdf', format='pdf')
+
+   plt.figure(f.number)
    sl.plot_extrapolation(ax, i_orb, forward=False, label_error='error', label_extrap=r'$\varepsilon_\mathrm{HO} = \left.\frac{dE}{dN}\right|_{N = N^-}$')
    # sl_epsilon_label = ax.text(i_orb - 0.9, sl.integer_energies[i_orb] - 0.1, r'$\varepsilon_\mathrm{HO} = \left.\frac{dE}{dN}\right|_{N = N^-}$', color=sl.color, fontsize=12)
    sl.label_Delta_E(ax, i_orb)
